@@ -1,0 +1,3 @@
+.idea/
+/docker-phpapi/logs
+/docker-phpapi/database/data/
