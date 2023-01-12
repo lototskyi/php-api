@@ -1,20 +1,15 @@
 <?php
+require __DIR__ . "/vendor/autoload.php";
 
-$ch = curl_init();
+$client = new GuzzleHttp\Client();
 
-//curl_setopt($ch, CURLOPT_URL, "https://randomuser.me/api");
-//curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-curl_setopt_array($ch, [
-    CURLOPT_URL => "https://api.openweathermap.org/data/2.5/weather?q=Kyiv",
-    CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_HEADER => true
+$response = $client->request('GET', 'https://api.github.com/user/repos', [
+    'headers' => [
+        'Authorization' => 'token API_KEY',
+        'User-Agent' => 'lototskyi'
+    ]
 ]);
 
-$response = curl_exec($ch);
-
-$status_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-
-curl_close($ch);
-echo $status_code . "\n";
-echo $response . "\n";
+echo $response->getStatusCode() . "\n";
+echo $response->getHeader('content-type')[0] . "\n";
+echo substr($response->getBody(), 0, 200) . "...\n";
