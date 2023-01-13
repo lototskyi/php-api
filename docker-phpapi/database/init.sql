@@ -1,6 +1,3 @@
-CREATE DATABASE api_db;
-GRANT ALL PRIVILEGES ON api_db.* TO appuser@'%' IDENTIFIED BY 'apppassword';
-USE api_db;
 CREATE TABLE `task` (
     `id` INT(11) NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(128) NOT NULL COLLATE 'utf8mb4_general_ci',
