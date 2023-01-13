@@ -1,12 +1,12 @@
 <?php
 
-class Database
+readonly class Database
 {
     public function __construct(
-        private readonly string $host,
-        private readonly string $name,
-        private readonly string $user,
-        private readonly string $password
+        private string $host,
+        private string $name,
+        private string $user,
+        private string $password
     ) {
 
     }
