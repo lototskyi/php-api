@@ -13,6 +13,14 @@ readonly class TaskController
                 echo json_encode($this->taskGateway->getAll());
             } elseif ($method === 'POST') {
                 $data = (array) json_decode(file_get_contents("php://input"));
+
+                $errors = $this->getValidationErrors($data);
+
+                if (!empty($errors)) {
+                    $this->respondUnprocessableEntity($errors);
+                    return;
+                }
+
                 $id = $this->taskGateway->create($data);
                 $this->respondCreated($id);
             } else {
@@ -42,6 +50,12 @@ readonly class TaskController
         }
     }
 
+    private function respondUnprocessableEntity(array $errors): void
+    {
+        header("{$_SERVER['SERVER_PROTOCOL']} 422 Unprocessable Entity");
+        echo json_encode(["errors" => $errors]);
+    }
+
     private function respondMethodNotAllowed(string $allowed_methods): void
     {
         http_response_code(405);
@@ -58,5 +72,22 @@ readonly class TaskController
     {
         http_response_code(201);
         echo json_encode(["message" => "Task created", "id" => $id]);
+    }
+
+    private function getValidationErrors(array $data): array
+    {
+        $errors = [];
+
+        if (empty($data["name"])) {
+            $errors[] = "name is required";
+        }
+
+        if (!empty($data["priority"])) {
+            if (filter_var($data["priority"], FILTER_VALIDATE_INT) === false) {
+                $errors[] = "priority must be an integer";
+            }
+        }
+
+        return $errors;
     }
 }
