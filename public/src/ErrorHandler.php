@@ -6,7 +6,7 @@ class ErrorHandler
         int $errno,
         string $errstr,
         string $errfile,
-        string $errline
+        int $errline
     ): void
     {
         throw new ErrorException($errstr, 0, $errno, $errfile, $errline);
