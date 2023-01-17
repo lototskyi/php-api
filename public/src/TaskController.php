@@ -2,7 +2,7 @@
 
 readonly class TaskController
 {
-    public function __construct(private TaskGateway $taskGateway)
+    public function __construct(private TaskGateway $taskGateway, private int $userID)
     {
     }
 
@@ -10,7 +10,7 @@ readonly class TaskController
     {
         if ($id === null) {
             if ($method === 'GET') {
-                echo json_encode($this->taskGateway->getAll());
+                echo json_encode($this->taskGateway->getAllForUser($this->userID));
             } elseif ($method === 'POST') {
                 $data = (array) json_decode(file_get_contents("php://input"));
 
@@ -21,13 +21,13 @@ readonly class TaskController
                     return;
                 }
 
-                $id = $this->taskGateway->create($data);
+                $id = $this->taskGateway->createForUser($this->userID, $data);
                 $this->respondCreated($id);
             } else {
                 $this->respondMethodNotAllowed("GET, POST");
             }
         } else {
-            $task = $this->taskGateway->get($id);
+            $task = $this->taskGateway->getForUser($this->userID, $id);
 
             if ($task === false) {
                 $this->respondNotFound($id);
@@ -49,11 +49,11 @@ readonly class TaskController
                         return;
                     }
 
-                    $rows = $this->taskGateway->update($id, $data);
+                    $rows = $this->taskGateway->updateForUser($this->userID, $id, $data);
                     echo json_encode(["message" => "Task updated", "rows" => $rows]);
                     break;
                 case 'DELETE':
-                    $rows = $this->taskGateway->delete($id);
+                    $rows = $this->taskGateway->deleteForUser($this->userID, $id);
                     echo json_encode(["message" => "Task deleted", "rows" => $rows]);
                     break;
                 default:
