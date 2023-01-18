@@ -21,7 +21,7 @@ $userGateway = new UserGateway($database);
 
 $auth = new Auth($userGateway);
 
-if (!$auth->authenticateAPIKey()) {
+if (!$auth->authenticateAccessToken()) {
     exit;
 }
 
